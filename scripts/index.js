@@ -1,9 +1,26 @@
-// @todo: Темплейт карточки
+const cardTemplate = document.querySelector('#card-template').content.querySelector('.card');
+const cardElements = document.querySelector('.places__list');
 
-// @todo: DOM узлы
+// Создаем новый элемент карточки и заполнеем данными из объекта
+function createCard(data) {
+    const card = cardTemplate.cloneNode(true);
+    card.querySelector('.card__image').src = data.link;
+    card.querySelector('.card__image').alt = data.name;
+    card.querySelector('.card__title').textContent = data.name;
+    card.querySelector('.card__delete-button').addEventListener('click', handleDeleteCard)
+    return card;
+}
+//Отрисовываем элемент 
+function renderCard(data) {
+    cardElements.prepend(createCard(data));
+};
 
-// @todo: Функция создания карточки
+// Для каждого элемента из массива вызваевм функцию отрисовки
+initialCards.forEach((data) => {
+    renderCard(data);
+});
 
-// @todo: Функция удаления карточки
-
-// @todo: Вывести карточки на страницу
+// Удалить карточку 
+function handleDeleteCard(evt) {
+    evt.target.closest('.card').remove()
+};
