@@ -1,18 +1,84 @@
 import './pages/index.css';
+import { initialCards } from './components/cardArray.js';
 import {createCard} from './components/cards.js';
-import { openProfile } from './components/modal.js';
-import { closePopup } from './components/utils.js';
-import { editProfileButton, closePopupButtons, addNewCardPopup, addCardButton } from './components/consts.js';
-import { openPopup } from './components/utils.js';
+import { openPopup, closePopup } from './components/modal.js';
+import {     cardElements,
+    profileForm,
+    profilePopup,
+    inputProfileDescription,
+    inputProfileName,
+    profileNameElement,
+    profileDescriptionElement,
+    imagePopup,
+    imageElement,
+    imageCaption,
+    buttounsClosePopup,
+    buttonEditProfile,
+    inputCardName,
+    inputCardUrl,
+    newCardAddPopup,
+    buttonAddCard,
+    cardForm,} from './components/consts.js';
 
 
-editProfileButton.addEventListener('click', openProfile)
+   initialCards.forEach((data) => {
+    renderCard(data);
+  });
+  
 
-addCardButton.addEventListener('click', () => {
-    openPopup(addNewCardPopup);
+  function openImage(item) {
+    openPopup(imagePopup);
+    imageElement.src = item.link;
+    imageElement.alt = item.name;
+    imageCaption.textContent = item.name;
+  }
+
+function openProfile() {
+    openPopup(profilePopup);
+    inputProfileName.value = profileNameElement.textContent;
+    inputProfileDescription.value = profileDescriptionElement.textContent;
+  }
+  
+  function handleSubmitFormProfileEdit(evt) {
+    evt.preventDefault();
+    profileNameElement.textContent = `${inputProfileName.value}`;
+    profileDescriptionElement.textContent = `${inputProfileDescription.value}`;
+    closePopup(profilePopup);
+  }
+  
+  function handleDeleteClick(evt) {
+    evt.remove()
+  };
+  
+ function renderCard(data) {
+    cardElements.prepend(createCard(data, handleDeleteClick, handleLikeClick, openImage));
+  };
+
+
+
+  function handleLikeClick(evt){
+    evt.target.closest('.card__like-button').classList.toggle('card__like-button_is-active');
+  }
+
+  function handleSubmitFormAddNewCard(evt){
+    evt.preventDefault();
+    const newCard = {}
+    newCard.name = inputCardName.value;
+    newCard.link = inputCardUrl.value;
+    renderCard(newCard)
+    evt.target.reset()
+    closePopup(newCardAddPopup)
+;}
+
+
+
+cardForm.addEventListener('submit', handleSubmitFormAddNewCard)
+profileForm.addEventListener("submit", handleSubmitFormProfileEdit);
+buttonEditProfile.addEventListener('click', openProfile)
+buttonAddCard.addEventListener('click', () => {
+openPopup(newCardAddPopup);
 });
-
-closePopupButtons.forEach((button) => {
-    const popup = button.closest('.popup'); 
-    button.addEventListener('click', () => closePopup(popup))
+buttounsClosePopup.forEach((button) => {
+const popup = button.closest('.popup'); 
+button.addEventListener('click', () => closePopup(popup))
 })

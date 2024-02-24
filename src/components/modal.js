@@ -1,57 +1,26 @@
-import { openPopup, closePopup } from "./utils";
-import {
-  editProfileForm,
-  editProfilePopup,
-  inputProfileDescription,
-  inputProfileName,
-  profileNameElement,
-  profileDescriptionElement,
-  imagePopup,
-  imageElement,
-  imageCaption,
-  inputCardName,
-  inputCardUrl,
-  addNewCardPopup,
-  cardForm
-} from "./consts";
-
-import {renderCard} from './cards.js'; 
-
-function openProfile() {
-  openPopup(editProfilePopup);
-  inputProfileName.value = profileNameElement.textContent;
-  inputProfileDescription.value = profileDescriptionElement.textContent;
+function openPopup(evt){
+  evt.classList.add('popup_is-opened');
+  evt.addEventListener('click', handleOverlayClosePopup);
+  document.addEventListener('keydown', handleEscClosePopup);
 }
 
-function handleSubmitFormProfileEdit(evt) {
-  evt.preventDefault();
-  profileNameElement.textContent = `${inputProfileName.value}`;
-  profileDescriptionElement.textContent = `${inputProfileDescription.value}`;
-  closePopup(editProfilePopup);
+function closePopup(evt){
+  evt.classList.remove('popup_is-opened');
+  evt.removeEventListener('click', handleOverlayClosePopup);
+  document.removeEventListener('keydown', handleEscClosePopup);
 }
 
-editProfileForm.addEventListener("submit", handleSubmitFormProfileEdit);
-
-function openImage(item) {
-  openPopup(imagePopup);
-  imageElement.src = item.link;
-  imageElement.alt = item.name;
-  imageCaption.textContent = item.name;
+function handleOverlayClosePopup(evt){
+  if(evt.target === evt.currentTarget){
+      closePopup(evt.target)
+  }
 }
 
+function handleEscClosePopup(evt){
+  if(evt.key === 'Escape'){
+      closePopup(document.querySelector('.popup_is-opened'));
+  }
+}
 
+export {openPopup, closePopup};
 
-function handleSubmitFormAddNewCard(evt){
-    evt.preventDefault();
-    const newCard = {}
-    newCard.name = inputCardName.value;
-    newCard.link = inputCardUrl.value;
-    renderCard(newCard)
-    evt.target.reset()
-    closePopup(addNewCardPopup)
-;}
-
-cardForm.addEventListener('submit', handleSubmitFormAddNewCard)
-
-
-export { openProfile, openImage };

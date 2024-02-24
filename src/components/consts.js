@@ -3,11 +3,11 @@ const cardTemplate = document.querySelector('#card-template').content.querySelec
 const cardElements  = document.querySelector('.places__list');
 
 // Переменны для формы редактирования профиля
-const editProfileButton = document.querySelector('.profile__edit-button')
-const editProfilePopup = document.querySelector('.popup_type_edit');
-const editProfileForm = document.forms['edit-profile'];
-const inputProfileName = editProfileForm.elements['name'];
-const inputProfileDescription = editProfileForm.elements['description'];
+const buttonEditProfile = document.querySelector('.profile__edit-button')
+const profilePopup = document.querySelector('.popup_type_edit');
+const profileForm = document.forms['edit-profile'];
+const inputProfileName = profileForm.elements['name'];
+const inputProfileDescription = profileForm.elements['description'];
 
 // Переменные для Элементы профиля (имя и описание деятельности)
 const profileNameElement = document.querySelector('.profile__title');
@@ -19,20 +19,20 @@ const imageElement = document.querySelector(".popup__image");
 const imageCaption = document.querySelector(".popup__caption");
 
 //Переменная для кнопки закрытия модальных окон
-const closePopupButtons = document.querySelectorAll('.popup__close')
+const buttounsClosePopup = document.querySelectorAll('.popup__close')
 
 // Переменные для формы добавления новой карточки
-const addCardButton = document.querySelector('.profile__add-button');
+const buttonAddCard = document.querySelector('.profile__add-button');
 const cardForm = document.forms['new-place'];
 const inputCardName = cardForm.elements['place-name'];
 const inputCardUrl = cardForm.elements['link'];
-const addNewCardPopup = document.querySelector('.popup_type_new-card')
+const newCardAddPopup = document.querySelector('.popup_type_new-card')
 
 export {
     cardTemplate,
     cardElements,
-    editProfileForm,
-    editProfilePopup,
+    profileForm,
+    profilePopup,
     inputProfileDescription,
     inputProfileName,
     profileNameElement,
@@ -40,11 +40,11 @@ export {
     imagePopup,
     imageElement,
     imageCaption,
-    closePopupButtons,
-    editProfileButton,
+    buttounsClosePopup,
+    buttonEditProfile,
     inputCardName,
     inputCardUrl,
-    addNewCardPopup,
-    addCardButton,
+    newCardAddPopup,
+    buttonAddCard,
     cardForm,
 };
