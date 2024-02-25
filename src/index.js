@@ -1,8 +1,9 @@
 import './pages/index.css';
 import { initialCards } from './components/cardArray.js';
-import {createCard} from './components/cards.js';
+import {createCard, handleDeleteClick, handleLikeClick} from './components/cards.js';
 import { openPopup, closePopup } from './components/modal.js';
-import {     cardElements,
+import {     
+  cardElements,
     profileForm,
     profilePopup,
     inputProfileDescription,
@@ -46,21 +47,12 @@ function openProfile() {
     closePopup(profilePopup);
   }
   
-  function handleDeleteClick(evt) {
-    evt.remove()
-  };
+  function renderCard(data) {
+     cardElements.prepend(createCard(data, handleDeleteClick, handleLikeClick, openImage));
+   };
   
- function renderCard(data) {
-    cardElements.prepend(createCard(data, handleDeleteClick, handleLikeClick, openImage));
-  };
-
-
-
-  function handleLikeClick(evt){
-    evt.target.closest('.card__like-button').classList.toggle('card__like-button_is-active');
-  }
-
-  function handleSubmitFormAddNewCard(evt){
+  
+   function handleSubmitFormAddNewCard(evt){
     evt.preventDefault();
     const newCard = {}
     newCard.name = inputCardName.value;

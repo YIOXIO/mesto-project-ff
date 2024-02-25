@@ -19,3 +19,15 @@ function createCard(data,handleDeleteClick,handleLikeClick,openImage) {
 
 export {createCard}
 
+function handleDeleteClick(evt) {
+  evt.remove()
+};
+
+
+
+
+function handleLikeClick(evt){
+  evt.target.closest('.card__like-button').classList.toggle('card__like-button_is-active');
+}
+
+export {handleDeleteClick, handleLikeClick}
