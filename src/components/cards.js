@@ -1,4 +1,5 @@
 
+import { deleteCard } from "./api.js";
 import { cardTemplate } from "./consts.js";
 
 
@@ -10,24 +11,25 @@ function createCard(data,handleDeleteClick,handleLikeClick,openImage) {
   cardImage.src = data.link;
   cardImage.alt = data.name;
   cardTitle.textContent = data.name;
-  card.querySelector('.card__delete-button').addEventListener('click', () => handleDeleteClick(card));
+  card.querySelector('.card__delete-button').addEventListener('click', () => handleDeleteClick(card, data._id));
   card.querySelector('.card__like-button').addEventListener('click', handleLikeClick);
   cardImage.addEventListener('click', () => openImage(data));
   return card;
 }
 
 
-export {createCard}
-
-function handleDeleteClick(evt) {
-  evt.remove()
+async function handleDeleteClick(card, cardId) {
+  try{
+    await deleteCard(card.owner._id, cardId)
+    card.remove()
+  }catch(error){
+    console.log(`Что - то пошло не так: ${error}`);
+  }
 };
-
-
 
 
 function handleLikeClick(evt){
   evt.target.closest('.card__like-button').classList.toggle('card__like-button_is-active');
 }
 
-export {handleDeleteClick, handleLikeClick}
+export {handleDeleteClick, handleLikeClick,createCard}

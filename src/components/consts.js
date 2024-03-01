@@ -28,6 +28,11 @@ const inputCardName = cardForm.elements['place-name'];
 const inputCardUrl = cardForm.elements['link'];
 const newCardAddPopup = document.querySelector('.popup_type_new-card')
 
+// Переменные для формы редактирования изображения профиля
+const avatarEditForm = document.forms['new-avatar'];
+const buttonEditAvatar = document.querySelector('.profile__avatar-button');
+const avatarPopup = document.querySelector('.popup_type_new-avatar')
+
 export {
     cardTemplate,
     cardElements,
@@ -47,4 +52,7 @@ export {
     newCardAddPopup,
     buttonAddCard,
     cardForm,
+    avatarEditForm,
+    buttonEditAvatar,
+    avatarPopup
 };

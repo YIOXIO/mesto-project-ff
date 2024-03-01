@@ -1,0 +1,44 @@
+.profile__avatar-button {
+    cursor: pointer;
+    position: relative;
+    margin: 0 29px 0 0;
+    width: 120px;
+    background-color: transparent;
+    padding-inline:0;
+    border: none;
+}
+
+.profile__avatar-button:after {
+    content: '';
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    visibility: visible;
+    opacity: 0;
+    transition: visibility .2s ease-in, opacity .2s ease-in;
+
+}
+
+.profile__avatar-button:hover:after {
+    background: rgba(0, 0, 0, .8) url('../../../images/edit-pencil.svg');
+    background-size: 25%;
+    background-position: center;
+    background-repeat: no-repeat;
+    visibility: visible;
+    opacity: 1;
+}
+
+
+@media screen and (max-width: 740px) {
+    .profile__avatar-button {
+      margin: 0 10px 0 0;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .profile__avatar-button {
+      margin-right: 0;
+    }
+  }
