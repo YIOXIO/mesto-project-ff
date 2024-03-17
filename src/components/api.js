@@ -16,7 +16,7 @@ export async function getUserInfo(){
         if(res.ok){
             return res.json(); 
         } else {
-            throw new Error(`Ошибка: ${res.status}`);
+            throw new Error(`Ошибка получения данных о пользователи: ${res.status}`);
         }
     } catch(error) {
         console.log(error);
@@ -34,7 +34,7 @@ export async function getInitialCards(){
         if(res.ok){
             return res.json(); 
         } else {
-            throw new Error(`Ошибка: ${res.status}`);
+            throw new Error(`Ошибка инициализации карт: ${res.status}`);
         }
     } catch(error) {
         console.log(error);
@@ -56,7 +56,7 @@ export async function patchProfile(name, about){
         if (res.ok){
             return res.json()
         }else {
-            throw new Error(`Ошибка: ${res.status}`);
+            throw new Error(`Ошибка редактирования профиля: ${res.status}`);
         }
     }catch(error){
         console.log(error)
@@ -78,7 +78,7 @@ export async function postCard(cardName,cardUrl){
         if (res.ok){
             return res.json()
         }else {
-            throw new Error(`Ошибка: ${res.status}`);
+            throw new Error(`Ошибка добавления карточки: ${res.status}`);
         }
     }catch(error){
         console.log(error)
@@ -86,19 +86,36 @@ export async function postCard(cardName,cardUrl){
     }
 }
 
-export async function deleteCard(cardId){
-    try{
-        const res = await fetch (`${config.baseUrl}/cards${cardId}`, {
-            method: 'DELETE',
-            headers: config.headers,
-        });
-        if (res.ok){
-            return res.json()
-        }else{
-            throw new Error(`Ошибка: ${res.status}`);
-        }
-    }catch(error){
-        console.log(error)
-        return Promise.reject(error.message)
+export async function deleteCard(cardId) {
+    try {
+      const res = await fetch(`${config.baseUrl}/cards/${cardId}`, { 
+        method: 'DELETE',
+        headers: config.headers,
+      });
+      if (res.ok) {
+        return res.json();
+      } else {
+        throw new Error(`Ошибка удаления карточки: ${res.status}`);
+      }
+    } catch (error) {
+      console.log(error);
+      return Promise.reject(error.message);
     }
-}
+  }
+  
+export async function likeCard(cardId) {
+    try {
+      const res = await fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+        method: 'PUT',
+        headers: config.headers,
+      });
+      if (res.ok) {
+        return res.json();
+      } else {
+        throw new Error(`Ошибка постановки лайка: ${res.status}`);
+      }
+    } catch (error) {
+      console.log(error);
+      return Promise.reject(error.message);
+    }
+  }

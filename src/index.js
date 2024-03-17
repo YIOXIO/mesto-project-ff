@@ -33,7 +33,7 @@ import {
   patchProfile,
   postCard
 } from "./components/api.js";
-import { enableValidation } from "./components/validation.js";
+import { enableValidation, clearValidation } from "./components/validation.js";
 
 enableValidation({
   formSelector: ".popup__form",
@@ -44,10 +44,31 @@ enableValidation({
   errorClass: "popup__input-error_active",
 });
 
-getInitialCards()
-.then((dataCards) => {
-  dataCards.forEach(renderCard)
+Promise.all([
+  getUserInfo(),
+  getInitialCards()
+])
+.then(([userInfo, initialCards]) => {
+  // Обработка успешно полученных данных о пользователе и картах
+  console.log('Данные о пользователе:', userInfo);
+  console.log('Инициализируемые карты:', initialCards);
+})
+.catch((error) => {
+  // Обработка ошибки
+  console.error('Ошибка при получении данных:', error);
 });
+
+
+getInitialCards()
+  .then((cards) => {
+    cards.forEach((card) => {
+      renderCard(card); 
+    });
+  })
+  .catch((error) => {
+    console.error(`Ошибка при загрузке карточек: ${error.message}`);
+  });
+
 
 getUserInfo()
   .then((res) => {
@@ -63,6 +84,7 @@ function openImage(item) {
   imageElement.src = item.link;
   imageElement.alt = item.name;
   imageCaption.textContent = item.name;
+  
 }
 
 function openProfile() {

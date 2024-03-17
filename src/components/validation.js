@@ -67,10 +67,19 @@ function enableValidation(settings) {
     });
 };
 
+function clearValidation(formElement, settings) {
+    const inputList = Array.from(formElement.querySelectorAll(settings.inputSelector));
+    const buttonElement = formElement.querySelector(settings.buttonSubmitSelector);
+
+    inputList.forEach((inputElement) => {
+        hideInputError(formElement, inputElement, settings);
+    });
+
+    inactiveButton(buttonElement, settings);
+}
 
 
-
-export { enableValidation };
+export { enableValidation,clearValidation };
 
 
 
