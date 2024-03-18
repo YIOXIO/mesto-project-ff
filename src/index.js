@@ -31,7 +31,7 @@ import {
   getUserInfo,
   getInitialCards,
   patchProfile,
-  postCard
+  postCard,
 } from "./components/api.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 
@@ -44,40 +44,40 @@ enableValidation({
   errorClass: "popup__input-error_active",
 });
 
-Promise.all([
-  getUserInfo(),
-  getInitialCards()
-])
-.then(([userInfo, initialCards]) => {
-  // Обработка успешно полученных данных о пользователе и картах
-  console.log('Данные о пользователе:', userInfo);
-  console.log('Инициализируемые карты:', initialCards);
-})
-.catch((error) => {
-  // Обработка ошибки
-  console.error('Ошибка при получении данных:', error);
-});
+async function loadUserInfo() {
+  try {
+    const userInfo = await getUserInfo();
+    profileNameElement.textContent = userInfo.name;
+    profileDescriptionElement.textContent = userInfo.about;
+    return userInfo;
+  } catch (error) {
+    console.error(`Ошибка при загрузке информации о пользователе: ${error.message}`);
+    return await Promise.reject(error);
+  }
+}
 
-
-getInitialCards()
-  .then((cards) => {
-    cards.forEach((card) => {
-      renderCard(card); 
+async function loadCards() {
+  try {
+    const cards = await getInitialCards();
+    cards.forEach(card => {
+      const cardElement = createCard(card, handleDeleteClick, handleLikeClick);
+      cardElements.append(cardElement);
     });
-  })
-  .catch((error) => {
+    return cards;
+  } catch (error) {
     console.error(`Ошибка при загрузке карточек: ${error.message}`);
-  });
+    return await Promise.reject(error);
+  }
+}
 
-
-getUserInfo()
-  .then((res) => {
-    profileNameElement.textContent = res.name;
-    profileDescriptionElement.textContent = res.about;
+Promise.all([loadCards(), loadUserInfo()])
+  .then(res => {
+    console.log('Все данные загружены успешно', res);
   })
-  .catch((error) => {
-    return Promise.reject(error.message);
+  .catch(error => {
+    console.error('Произошла ошибка при загрузке данных:', error);
   });
+
 
 function openImage(item) {
   openPopup(imagePopup);
@@ -111,11 +111,11 @@ async function handleSubmitFormProfileEdit(evt) {
 
 }
 
-function renderCard(data) {
-  cardElements.prepend(
-    createCard(data, handleDeleteClick, handleLikeClick, openImage)
-  );
-}
+// function renderCard(data, userId) {
+//   cardElements.prepend(
+//     createCard(data, userId, handleDeleteClick, handleLikeClick, openImage)
+//   );
+// }
 
 async function handleSubmitFormAddNewCard(evt) {
   evt.preventDefault();
@@ -131,7 +131,6 @@ async function handleSubmitFormAddNewCard(evt) {
   evt.target.reset();
   }catch(error){
     console.log(`Что - то пошло не так: ${error}`);
-
   }
 
 }

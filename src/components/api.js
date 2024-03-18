@@ -119,3 +119,19 @@ export async function likeCard(cardId) {
       return Promise.reject(error.message);
     }
   }
+  export async function deleteLike(cardId) {
+    try {
+      const res = await fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+        method: 'DELETE',
+        headers: config.headers,
+      });
+      if (res.ok) {
+        return res.json();
+      } else {
+        throw new Error(`Ошибка удаления лайка: ${res.status}`);
+      }
+    } catch (error) {
+      console.log(error);
+      return Promise.reject(error.message);
+    }
+}
