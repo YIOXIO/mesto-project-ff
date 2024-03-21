@@ -1,6 +1,8 @@
 import "./pages/index.css";
 import {
   createCard,
+  handleDeleteClick,
+  handleLikeClick
 
 } from "./components/cards.js";
 import { openPopup, closePopup } from "./components/modal.js";
@@ -26,7 +28,8 @@ import {
   avatarEditForm,
   avatarPopup,
   inputAvatarUrl,
-  profileImageElement
+  profileImageElement,
+  validationSettings
 } from "./components/consts.js";
 import {
   getUserInfo,
@@ -36,28 +39,23 @@ import {
   patchAvatar
 } from "./components/api.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
+import { handleSubmit } from "./utils/handleSubmit.js";
 
 
-const settings = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  buttonSubmitSelector: ".popup__button",
-  buttonInActiveClass: "popup__button_inactive",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__input-error_active",
-}
-enableValidation(settings);
 
+enableValidation(validationSettings);
+
+let userId
 
 Promise.all([getUserInfo(), getInitialCards()])
   .then(function([userData, cardData]) {
-
     renderUser(userData);
-
+    userId = userData._id
+    
     cardData.forEach((card) => {
-      const cardElement = createCard(userData, card
+      const cardElement = createCard(userId, card, handleDeleteClick, handleLikeClick, handleImageClick
       )
-    cardElements.append(cardElement)
+    cardElements.prepend(cardElement)
 
     })
   })
@@ -66,12 +64,8 @@ Promise.all([getUserInfo(), getInitialCards()])
     console.error(error);
   });
 
-function loadingStatus(evt, message){
-  const popUpButton = evt.target.querySelector('.popup__button')
-  popUpButton.textContent = message;
-}
 
-export function openImage(item) {
+export function handleImageClick(item) {
   openPopup(imagePopup);
   imageElement.src = item.link;
   imageElement.alt = item.name;
@@ -80,96 +74,70 @@ export function openImage(item) {
 
 
 function openProfile() {
+  clearValidation(profileForm, validationSettings)
   openPopup(profilePopup);
   inputProfileName.value = profileNameElement.textContent;
   inputProfileDescription.value = profileDescriptionElement.textContent;
-  clearValidation(profileForm, settings)
+
 }
 
 function renderUser(userData) {
   profileNameElement.textContent = userData.name;
   profileDescriptionElement.textContent = userData.about;
   profileImageElement.src = userData.avatar;
-
 }
 
-function renderCard(userData, cardData) {
-  const newCard = createCard(userData, cardData);
-  cardElements.append(newCard);
+function renderCard(userId, cardData) {
+  const newCard = createCard(userId, cardData, handleDeleteClick, handleLikeClick, handleImageClick );
+  cardElements.prepend(newCard);
 }
+
 
 
 function handleSubmitFormAddNewCard(evt) {
-  evt.preventDefault();
-  const cardName = inputCardName.value;
-  const cardLink = inputCardUrl.value;
-
-  loadingStatus(evt, 'Сохранение...');
-
-  getUserInfo()
-    .then(userData => {
-      return postCard(cardName, cardLink)
-        .then(cardData => {
-          renderCard(userData, cardData);
-          cardForm.reset();
-          closePopup(newCardAddPopup);
-
-        })
-        .catch(error => {
-          console.error('Ошибка создания новой карточки:', error);
-        })
-        .finally(() => {
-          loadingStatus(evt, 'Сохранить')
-        })
-    })
-    .catch(error => {
-      console.error('Ошибка получения пользовательских данных:', error);
-      loadingStatus(evt, 'Сохранить');
-    });
+    function makeRequest(){
+      return postCard(inputCardName.value, inputCardUrl.value)
+      .then((card) => {
+        renderCard(userId, card);
+        closePopup(newCardAddPopup)
+      })
+      .catch((console.error))
+  }
+  handleSubmit(makeRequest,evt)
 }
 
-
-function handleSubmitFormProfileEdit(evt) {
-  evt.preventDefault();
-
-  const profileNameApi = inputProfileName.value;
-  const profileAboutApi = inputProfileDescription.value;
-  loadingStatus(evt, 'Сохранение...');
-
-  return patchProfile(profileNameApi, profileAboutApi) 
-    .then((res) => {
-      profileNameElement.textContent = res.name; 
-      profileDescriptionElement.textContent = res.about;
+function handleSubmitFormProfileEdit(evt){
+  function makeRequest(){
+    return patchProfile(inputProfileName.value, inputProfileDescription.value)
+    .then((userData) => {
+      profileNameElement.textContent = userData.name;
+      profileDescriptionElement.textContent = userData.about
       profileForm.reset()
-      closePopup(profilePopup);
+      closePopup(profilePopup)
     })
-    .catch((error) => {
-      console.log(`Что-то пошло не так: ${error}`);
-    })
-    .finally(() => {
-      loadingStatus(evt, 'Сохранить');
-    });
+    .catch((console.error))
+  }
+  handleSubmit(makeRequest, evt)
 }
-
 
 function handleSubmitFormProfileImage(evt){
-  evt.preventDefault()
-  const porfileImageApi = inputAvatarUrl.value;
-  loadingStatus(evt, 'Сохранение...');
-  return patchAvatar(porfileImageApi)
-  .then((res) => {
-    profileImageElement.src = res.avatar
-    avatarEditForm.reset()
-    closePopup(avatarPopup)
-  })
-  .catch((error) => {
-    console.log(`Что-то пошло не так: ${error}`);
-  })
-  .finally(() => {
-    loadingStatus(evt, 'Сохранить');
-  })
-  
+  function makeRequest(){
+    return patchAvatar(inputAvatarUrl.value)
+    .then((userData) => {
+      profileImageElement.src = userData.avatar
+      avatarEditForm.reset()
+      closePopup(avatarPopup)
+    })
+    .catch((console.error))
+  }
+  handleSubmit(makeRequest, evt)
 }
+
+
+
+
+
+
 
 
 
@@ -180,10 +148,11 @@ buttonEditProfile.addEventListener("click", openProfile);
 
 
 buttonAddCard.addEventListener("click", () => {
+  clearValidation(cardForm, validationSettings)
   openPopup(newCardAddPopup);
-  clearValidation(avatarEditForm, settings)
 });
 buttonEditAvatar.addEventListener("click", () => {
+  clearValidation(avatarEditForm, validationSettings)
   openPopup(avatarPopup);
 });
 buttounsClosePopup.forEach((button) => {

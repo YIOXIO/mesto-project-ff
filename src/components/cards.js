@@ -1,9 +1,8 @@
-import { deleteCard, likeCard, deleteLike } from "./api.js";
 import { cardTemplate } from "./consts.js";
-import { openImage } from "../index.js";
+import { deleteCard, likeCard, deleteLike } from "./api.js";
 
 
-function createCard(userData, cardsData) {
+function createCard(userId, cardsData, handleDeleteClick, handleLikeClick, handleImageClick) {
   const card = cardTemplate.cloneNode(true);
   const cardImage = card.querySelector('.card__image');
   const cardTitle = card.querySelector('.card__title');
@@ -16,21 +15,21 @@ function createCard(userData, cardsData) {
   cardTitle.textContent = cardsData.name;
   
 
-  if (userData._id === cardsData.owner._id) {
+  if (userId === cardsData.owner._id) {
     deleteButton.addEventListener('click', (evt) => handleDeleteClick(evt, cardsData._id));
   } else {
     deleteButton.remove();
   }
 
 
-  if (cardsData.likes && cardsData.likes.some(like => like._id === userData._id)) {
+  if (cardsData.likes && cardsData.likes.some(like => like._id === userId)) {
     likeButton.classList.add('card__like-button_is-active');
   }
   
   likeButton.addEventListener('click', (evt) => handleLikeClick(evt, cardsData._id, likesCounter));
   likesCounter.textContent = cardsData.likes.length;
   
-  cardImage.addEventListener('click', () => openImage(cardsData));
+  cardImage.addEventListener('click', () => handleImageClick(cardsData));
   
   return card;
 }
@@ -62,6 +61,6 @@ function handleLikeClick(evt, cardId, likesCounter) {
         .catch((error) => console.log(error));
 }
 
-export {createCard}
+export {createCard, handleDeleteClick, handleLikeClick}
 
 

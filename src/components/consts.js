@@ -35,7 +35,15 @@ const inputAvatarUrl = avatarEditForm.elements['avatar-link'];
 const buttonEditAvatar = document.querySelector('.profile__avatar-button');
 const avatarPopup = document.querySelector('.popup_type_new-avatar')
 
-
+// Настройки для валидации форм
+const validationSettings = {
+    formSelector: ".popup__form",
+    inputSelector: ".popup__input",
+    buttonSubmitSelector: ".popup__button",
+    buttonInActiveClass: "popup__button_inactive",
+    inputErrorClass: "popup__input_type_error",
+    errorClass: "popup__input-error_active",
+  }
 export {
     cardTemplate,
     cardElements,
@@ -59,5 +67,6 @@ export {
     buttonEditAvatar,
     avatarPopup,
     inputAvatarUrl,
-    profileImageElement
+    profileImageElement,
+    validationSettings
 };
