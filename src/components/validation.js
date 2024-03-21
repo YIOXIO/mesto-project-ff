@@ -27,7 +27,6 @@ function inactiveButton(buttonElement, settings) {
     buttonElement.disabled = true;
 }
 
-
 function hasInvalidInput(inputList) {
     return inputList.some((inputElement) => !inputElement.validity.valid);
 };

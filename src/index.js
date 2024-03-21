@@ -129,8 +129,6 @@ function handleSubmitFormAddNewCard(evt) {
 }
 
 
-
-
 function handleSubmitFormProfileEdit(evt) {
   evt.preventDefault();
 
