@@ -48,39 +48,28 @@ const settings = {
 }
 enableValidation(settings);
 
-function loadingStatus(evt, message){
-  const popUpButton = evt.target.querySelector('.popup__button')
-  popUpButton.textContent = message;
-}
 
 Promise.all([getUserInfo(), getInitialCards()])
   .then(function([userData, cardData]) {
 
     renderUser(userData);
-    renderCard(userData, cardData)
+
+    cardData.forEach((card) => {
+      const cardElement = createCard(userData, card
+      )
+    cardElements.append(cardElement)
+
+    })
   })
   .catch(function(error) {
 
     console.error(error);
   });
 
-
-
-
-  function renderCard(userId, cardsData) {
-  cardsData.forEach(cardData => {
-    const card = createCard(userId, cardData);
-    cardElements.appendChild(card);
-  });
+function loadingStatus(evt, message){
+  const popUpButton = evt.target.querySelector('.popup__button')
+  popUpButton.textContent = message;
 }
-
-function renderUser(userData) {
-  profileNameElement.textContent = userData.name;
-  profileDescriptionElement.textContent = userData.about;
-  profileImageElement.src = userData.avatar;
-
-}
-
 
 export function openImage(item) {
   openPopup(imagePopup);
@@ -90,74 +79,54 @@ export function openImage(item) {
 }
 
 
+function openProfile() {
+  openPopup(profilePopup);
+  inputProfileName.value = profileNameElement.textContent;
+  inputProfileDescription.value = profileDescriptionElement.textContent;
+  clearValidation(profileForm, settings)
+}
 
-function handleSubmitFormAddNewCard(evt) {
-  evt.preventDefault();
-  const CardName = inputCardName.value;
-  const CardLink = inputCardUrl.value;
-  loadingStatus(evt, 'Сохранение...')
+function renderUser(userData) {
+  profileNameElement.textContent = userData.name;
+  profileDescriptionElement.textContent = userData.about;
+  profileImageElement.src = userData.avatar;
 
-  // Отправляем запрос на сервер
-  postCard(CardName, CardLink)
-    .then(card => {
-      renderCard(card);
-      cardForm.reset()
-    })
-    .catch(error => {
-      console.error('Ошибка добавления новой карточки:', error);
-    })
-    .finally(() => {
-      loadingStatus(evt, 'Сохранить')
-      closePopup(newCardAddPopup)
+}
 
-    })
+function renderCard(userData, cardData) {
+  const newCard = createCard(userData, cardData);
+  cardElements.append(newCard);
 }
 
 
+function handleSubmitFormAddNewCard(evt) {
+  evt.preventDefault();
+  const cardName = inputCardName.value;
+  const cardLink = inputCardUrl.value;
 
+  loadingStatus(evt, 'Сохранение...');
 
+  getUserInfo()
+    .then(userData => {
+      return postCard(cardName, cardLink)
+        .then(cardData => {
+          renderCard(userData, cardData);
+          cardForm.reset();
+          closePopup(newCardAddPopup);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        })
+        .catch(error => {
+          console.error('Ошибка создания новой карточки:', error);
+        })
+        .finally(() => {
+          loadingStatus(evt, 'Сохранить')
+        })
+    })
+    .catch(error => {
+      console.error('Ошибка получения пользовательских данных:', error);
+      loadingStatus(evt, 'Сохранить');
+    });
+}
 
 
 
@@ -184,6 +153,7 @@ function handleSubmitFormProfileEdit(evt) {
     });
 }
 
+
 function handleSubmitFormProfileImage(evt){
   evt.preventDefault()
   const porfileImageApi = inputAvatarUrl.value;
@@ -205,60 +175,7 @@ function handleSubmitFormProfileImage(evt){
 
 
 
-
-
 avatarEditForm.addEventListener('submit', handleSubmitFormProfileImage)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function openProfile() {
-  openPopup(profilePopup);
-  inputProfileName.value = profileNameElement.textContent;
-  inputProfileDescription.value = profileDescriptionElement.textContent;
-}
-
-
-
-
-
-
-
-
 cardForm.addEventListener("submit", handleSubmitFormAddNewCard);
 profileForm.addEventListener("submit", handleSubmitFormProfileEdit);
 buttonEditProfile.addEventListener("click", openProfile);
@@ -266,6 +183,7 @@ buttonEditProfile.addEventListener("click", openProfile);
 
 buttonAddCard.addEventListener("click", () => {
   openPopup(newCardAddPopup);
+  clearValidation(avatarEditForm, settings)
 });
 buttonEditAvatar.addEventListener("click", () => {
   openPopup(avatarPopup);

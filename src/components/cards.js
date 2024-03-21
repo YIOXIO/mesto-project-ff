@@ -3,7 +3,7 @@ import { cardTemplate } from "./consts.js";
 import { openImage } from "../index.js";
 
 
-function createCard(userId, cardsData) {
+function createCard(userData, cardsData) {
   const card = cardTemplate.cloneNode(true);
   const cardImage = card.querySelector('.card__image');
   const cardTitle = card.querySelector('.card__title');
@@ -16,14 +16,14 @@ function createCard(userId, cardsData) {
   cardTitle.textContent = cardsData.name;
   
 
-  if (userId._id === cardsData.owner._id) {
+  if (userData._id === cardsData.owner._id) {
     deleteButton.addEventListener('click', (evt) => handleDeleteClick(evt, cardsData._id));
   } else {
     deleteButton.remove();
   }
 
 
-  if (cardsData.likes && cardsData.likes.some(like => like._id === userId._id)) {
+  if (cardsData.likes && cardsData.likes.some(like => like._id === userData._id)) {
     likeButton.classList.add('card__like-button_is-active');
   }
   

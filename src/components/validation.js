@@ -66,18 +66,17 @@ function enableValidation(settings) {
         setEventListeners(formElement, settings);
     });
 };
-
 function clearValidation(formElement, settings) {
     const inputList = Array.from(formElement.querySelectorAll(settings.inputSelector));
     const buttonElement = formElement.querySelector(settings.buttonSubmitSelector);
 
     inputList.forEach((inputElement) => {
+        inputElement.value = '';
         hideInputError(formElement, inputElement, settings);
     });
 
     inactiveButton(buttonElement, settings);
 }
-
 
 export { enableValidation,clearValidation };
 
