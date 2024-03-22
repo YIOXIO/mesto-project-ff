@@ -101,7 +101,6 @@ function handleSubmitFormAddNewCard(evt) {
         renderCard(userId, card);
         closePopup(newCardAddPopup)
       })
-      .catch((console.error))
   }
   handleSubmit(makeRequest,evt)
 }
@@ -112,10 +111,8 @@ function handleSubmitFormProfileEdit(evt){
     .then((userData) => {
       profileNameElement.textContent = userData.name;
       profileDescriptionElement.textContent = userData.about
-      profileForm.reset()
       closePopup(profilePopup)
     })
-    .catch((console.error))
   }
   handleSubmit(makeRequest, evt)
 }
@@ -125,10 +122,8 @@ function handleSubmitFormProfileImage(evt){
     return patchAvatar(inputAvatarUrl.value)
     .then((userData) => {
       profileImageElement.src = userData.avatar
-      avatarEditForm.reset()
       closePopup(avatarPopup)
     })
-    .catch((console.error))
   }
   handleSubmit(makeRequest, evt)
 }
